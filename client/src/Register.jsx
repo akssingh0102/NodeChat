@@ -1,12 +1,24 @@
-import { useState } from "react";
+import axios from "axios";
+import { useState, useContext } from "react";
+import { UserContext } from "./UserContext";
 
 export default function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const { setUsername: setLoggedInUsername, setId } = useContext(UserContext);
+
+  const register = async (event) => {
+    event.preventDefault();
+    const response = await axios.post("/register", { username, password });
+
+    const { data } = response.data;
+    setLoggedInUsername(username);
+    setId(data.id);
+  };
 
   return (
     <div className="bg-blue-50 h-screen flex items-center">
-      <form className="w-64 mx-auto mb-12">
+      <form className="w-64 mx-auto mb-12" onSubmit={register}>
         <input
           value={username}
           onChange={(event) => setUsername(event.target.value)}
